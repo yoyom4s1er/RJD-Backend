@@ -55,10 +55,10 @@
     })
 </script>
 <script>
-    function onDirectoryChange() {
+    function onDirectoryChange(value) {
         $.ajax({
             type:'GET',
-            url:'/api/directory' + document.getElementById("Selector1").value,
+            url:'/api/directories/' + value,
             headers:{
                 Accept : "application/json; charset=utf8",
                 "Content-Type" : "application/json; charset=utf8"
@@ -93,16 +93,14 @@
                     cell4.innerHTML = result[i].column4;
                     cell5.innerHTML = result[i].column5;
                 }
-
-                document.getElementById("Selector2").value = "";
             }
         })
     }
 
-    function onClassifierChange() {
+    function onClassifierChange(value) {
         $.ajax({
             type:'GET',
-            url:'/api/classifier' + document.getElementById("Selector2").value,
+            url:'/api/classifiers/' + value,
             headers:{
                 Accept : "application/json; charset=utf8",
                 "Content-Type" : "application/json; charset=utf8"
@@ -145,29 +143,126 @@
                     cell6.innerHTML = result[i].column6;
                     cell7.innerHTML = result[i].column7;
                 }
+            }
+        })
+    }
 
-                document.getElementById("Selector1").value = "";
+    function loadDirectoryNames() {
+        $.ajax({
+            type:'GET',
+            url:'/api/directories',
+            headers:{
+                Accept : "application/json; charset=utf8",
+                "Content-Type" : "application/json; charset=utf8"
+            },
+            success: function (result) {
+                var array = document.getElementById("DocumentsArray");
+                while (array.firstChild) {
+                    array.removeChild(array.firstChild);
+                }
+                for (let i = 0; i < result.length; i++) {
+                    var button = document.createElement('button');
+                    button.innerText = result[i];
+                    button.classList.add("document");
+                    button.setAttribute("onClick", "onDirectoryChange('" + result[i] + "')");
+                    array.appendChild(button);
+                }
+            }
+        })
+    }
+
+    function loadClassifierNames() {
+        $.ajax({
+            type:'GET',
+            url:'/api/classifiers',
+            headers:{
+                Accept : "application/json; charset=utf8",
+                "Content-Type" : "application/json; charset=utf8"
+            },
+            success: function (result) {
+                var array = document.getElementById("DocumentsArray");
+                while (array.firstChild) {
+                    array.removeChild(array.firstChild);
+                }
+                for (let i = 0; i < result.length; i++) {
+                    var button = document.createElement('button');
+                    button.innerText = result[i];
+                    button.classList.add("document");
+                    button.setAttribute("onClick", "onClassifierChange('" + result[i] + "')");
+                    array.appendChild(button);
+                }
             }
         })
     }
 </script>
 <head>
     <style><%@include file="/WEB-INF/jsp/style.css"%></style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
     <title>Title</title>
 </head>
-<body>
-<select style="text-align: center; font-weight: bold; border-radius: 5px" id="Selector1" onchange="onDirectoryChange()">
-    <option value="" selected disabled hidden>Справочники</option>
-    <option value="1">Справочник 1</option>
-    <option value="2">Справочник 2</option>
-</select>
-<select style="text-align: center; font-weight: bold; border-radius: 5px" id="Selector2" onchange="onClassifierChange()">
-    <option value="" selected disabled hidden>Классификаторы</option>
-    <option value="1">Классификатор 1</option>
-</select>
-<div style="display: flex; margin-left: auto; margin-right: auto; margin-top: 10px;">
-    <table style="margin-left: auto; margin-right: auto;" id="myTable">
-    </table>
+<body style="margin: 0">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<div class="header1">
+    <div>
+        <div class="header1Text" onclick="loadDirectoryNames()">Справочники</div>
+        <div class="header1Text" onclick="loadClassifierNames()">Классификаторы</div>
+        <div class="list-choice">
+            <div class="list-choice-title">Справки</div>
+            <div class="list-choice-objects">
+                <label>
+                    <input type="radio" name="name"/>
+                    <span style="width: 100px">О прог</span>
+                </label>
+                <label>
+                    <input type="radio" name="name"/>
+                    <span style="width: 100%">Контакты</span>
+                </label>
+                <label>
+                    <input type="radio" name="name"/>
+                    <span style="width: 100%">Норматив</span>
+                </label>
+            </div>
+        </div>
+    </div>
+    <div style="margin-right: 5%; padding: 8px;">
+        <label>
+            <input class="searchField" type="text" placeholder="Поиск..." style="color: rgb(128,128,128); text-indent: 6px">
+            </input>
+        </label>
+    </div>
+</div>
+<div style="display: flex; flex-direction: row">
+    <div>
+        <div class="box" id="DocumentsArray">
+            <div class="list-group">
+                <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
+                    The current link item
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">A second link item</a>
+                <a href="#" class="list-group-item list-group-item-action">A third link item</a>
+                <a href="#" class="list-group-item list-group-item-action">A fourth link item</a>
+                <a class="list-group-item list-group-item-action disabled" aria-disabled="true">A disabled link item</a>
+                <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
+                    The current link item
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">A second link item</a>
+                <a href="#" class="list-group-item list-group-item-action">A third link item</a>
+                <a href="#" class="list-group-item list-group-item-action">A fourth link item</a>
+                <a class="list-group-item list-group-item-action disabled" aria-disabled="true">A disabled link item</a>
+                <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
+                    The current link item
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">A second link item</a>
+                <a href="#" class="list-group-item list-group-item-action">A third link item</a>
+                <a href="#" class="list-group-item list-group-item-action">A fourth link item</a>
+                <a class="list-group-item list-group-item-action disabled" aria-disabled="true">A disabled link item</a>
+            </div>
+        </div>
+    </div>
+    <div style="margin-left: auto; margin-right: auto">
+        <table class="table table-striped" id="myTable"></table>
+    </div>
 </div>
 </body>
 </html>
