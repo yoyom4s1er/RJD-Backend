@@ -1,0 +1,55 @@
+.button {
+    width: 5em;
+    font-weight: bold;
+    font-size: large;
+    margin-right: 10px;
+    background-color: dodgerblue;
+    color: white;
+    border: none;
+    text-align: center;
+    border-radius: 5px;
+    cursor:pointer;
+}
+.queryLine {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-left: 10%;
+    padding-right: 10%;
+    font-weight: bold;
+    user-select: none;
+    font-size: 1em;
+    width: auto;
+}
+
+.inputCustomSmall {
+    border-radius: 5px;
+    width: 60px;
+}
+
+.inputCustomLarge {
+    border-radius: 5px;
+    width: 300px;
+}
+
+.response {
+    display: flex;
+    flex-direction: column;
+    margin-left: auto;
+    margin-right: auto;
+    font-weight: bold;
+    margin-top: 5px;
+    font-size: larger;
+    width:75%;
+    min-height: 500px;
+    vertical-align: top;
+    border-radius: 10px;
+    border: solid black;
+}
+
+table {
+    border: 1px solid black; /* Рамка вокруг таблицы */
+    border-collapse: collapse; /* Отображать только одинарные линии */
+}
+th, td {
+    border: 1px solid black; /* Граница вокруг ячеек */
+}
