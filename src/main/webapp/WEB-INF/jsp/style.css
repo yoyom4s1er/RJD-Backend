@@ -2,10 +2,14 @@
 
 .box{
     height: 500px;
-    width: 150px;
-    max-height: 400px;
+    max-width: 20%;
+    max-height: 80%;
     overflow-y: auto;
-    border: 1px solid black;
+    margin-left: 1px;
+
+    position: sticky;
+    top: 10%;
+
 }
 
 .document{
@@ -30,6 +34,9 @@
     justify-content: space-between;
     display: flex;
     flex-direction: row;
+    position: sticky;
+    top: 0;
+    z-index: 999;
 }
 
 .header1 > * {
@@ -130,4 +137,62 @@ html {
 
 .list-choice:hover .list-choice-objects {
     max-height: 540px;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+.hrefStyle {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.hrefStyle-hyphens {
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+}
+
+.table-custom {
+    max-height: 100%;
+}
+
+.table-header {
+    font-weight: bold;
+}
+
+.searchMenu {
+    position: fixed;
+    top: 46px;
+    background: red;
+    width: 185px;
+}
+
+.container-table {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    overflow: scroll;
+}
+
+.update-field {
+    width: 100%;
+    padding: 0;
 }

@@ -1,5 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
+<html lang="ru">
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function (){
@@ -79,6 +79,8 @@
                 cell4Header.innerHTML = "Column4";
                 cell5Header.innerHTML = "Column5";
 
+                header.classList.add("table-header");
+
                 for (let i = 0; i < result.length; i++) {
                     var row = table.insertRow(table.rows.length);
                     var cell1 = row.insertCell(0);
@@ -86,6 +88,8 @@
                     var cell3 = row.insertCell(2);
                     var cell4 = row.insertCell(3);
                     var cell5 = row.insertCell(4);
+
+                    cell1.style = "font-weight: bold";
 
                     cell1.innerHTML = result[i].id;
                     cell2.innerHTML = result[i].column2;
@@ -107,6 +111,7 @@
             },
             success: function (result) {
                 var table = document.getElementById("myTable");
+                table.name = "classifiers/" + value;
                 table.innerHTML = "";
                 var header = table.insertRow(0);
                 var cell1Header = header.insertCell(0);
@@ -116,6 +121,7 @@
                 var cell5Header = header.insertCell(4);
                 var cell6Header = header.insertCell(5);
                 var cell7Header = header.insertCell(6);
+                var cell8Header = header.insertCell(7);
 
                 cell1Header.innerHTML = "Id";
                 cell2Header.innerHTML = "Column2";
@@ -124,6 +130,9 @@
                 cell5Header.innerHTML = "Column5";
                 cell6Header.innerHTML = "Column6";
                 cell7Header.innerHTML = "Column7";
+                cell8Header.innerHTML = "Действие";
+
+                header.classList.add("table-header");
 
                 for (let i = 0; i < result.length; i++) {
                     var row = table.insertRow(table.rows.length);
@@ -134,6 +143,9 @@
                     var cell5 = row.insertCell(4);
                     var cell6 = row.insertCell(5);
                     var cell7 = row.insertCell(6);
+                    var cell8 = row.insertCell(7);
+
+                    cell1.style = "font-weight: bold";
 
                     cell1.innerHTML = result[i].id;
                     cell2.innerHTML = result[i].column2;
@@ -142,6 +154,11 @@
                     cell5.innerHTML = result[i].column5;
                     cell6.innerHTML = result[i].column6;
                     cell7.innerHTML = result[i].column7;
+
+                    var updateButton = document.createElement("button");
+                    updateButton.innerHTML = "Изменить";
+                    updateButton.setAttribute("onClick", "updateFieldUI(" + result[i].id + ")");
+                    cell8.appendChild(updateButton);
                 }
             }
         })
@@ -161,11 +178,13 @@
                     array.removeChild(array.firstChild);
                 }
                 for (let i = 0; i < result.length; i++) {
-                    var button = document.createElement('button');
-                    button.innerText = result[i];
-                    button.classList.add("document");
-                    button.setAttribute("onClick", "onDirectoryChange('" + result[i] + "')");
-                    array.appendChild(button);
+                    var ref = document.createElement('a');
+                    ref.innerText = result[i];
+                    ref.classList.add("list-group-item");
+                    ref.classList.add("list-group-item-action");
+                    ref.setAttribute("onClick", "onDirectoryChange('" + result[i] + "')");
+                    ref.setAttribute("href", "#");
+                    array.appendChild(ref);
                 }
             }
         })
@@ -185,14 +204,102 @@
                     array.removeChild(array.firstChild);
                 }
                 for (let i = 0; i < result.length; i++) {
-                    var button = document.createElement('button');
-                    button.innerText = result[i];
-                    button.classList.add("document");
-                    button.setAttribute("onClick", "onClassifierChange('" + result[i] + "')");
-                    array.appendChild(button);
+                    var ref = document.createElement('a');
+                    ref.innerText = result[i];
+                    ref.classList.add("list-group-item");
+                    ref.classList.add("list-group-item-action");
+                    ref.classList.add("hrefStyle");
+                    ref.setAttribute("onClick", "onClassifierChange('" + result[i] + "')");
+                    ref.setAttribute("href", "#");
+                    array.appendChild(ref);
                 }
             }
         })
+    }
+
+    function searchQuery() {
+        var val = document.getElementById("SearchInput").value;
+        if (val.length === 0) {
+            var array = document.getElementById("SearchMenu");
+            while (array.firstChild) {
+                array.removeChild(array.firstChild);
+            }
+            return;
+        }
+        $.ajax({
+            type:'GET',
+            url:'/api/search/tableNames',
+            data: {
+                "query" : val
+            },
+            headers:{
+                Accept : "application/json; charset=utf8",
+                "Content-Type" : "application/json; charset=utf8"
+            },
+            success: function (result) {
+                var array = document.getElementById("SearchMenu");
+                while (array.firstChild) {
+                    array.removeChild(array.firstChild);
+                }
+
+                var count = result.length;
+
+                if (count > 6) {
+                    count = 6
+                }
+                for (let i = 0; i < count; i++) {
+                    var ref = document.createElement('a');
+                    ref.innerText = result[i];
+                    ref.classList.add("list-group-item");
+                    ref.classList.add("list-group-item-action");
+                    if (result[i].startsWith("directory")) {
+                        ref.setAttribute("onClick", "onDirectoryChange('" + result[i] + "')");
+                    }
+                    if (result[i].startsWith("k")) {
+                        ref.setAttribute("onClick", "onClassifierChange('" + result[i] + "')");
+                    }
+                    ref.setAttribute("href", "#");
+                    array.appendChild(ref);
+                }
+            }
+        })
+    }
+
+    $(document).click(function(event) {
+        var targetEl = event.target.id;
+        if (targetEl !== "SearchInput") {
+            var array = document.getElementById("SearchMenu");
+            while (array.firstChild) {
+                array.removeChild(array.firstChild);
+            }
+        }
+    });
+
+    function updateFieldUI(id) {
+        var table = document.getElementById("myTable");
+        var cells = table.rows[id].cells;
+        for (let i = 1; i < cells.length - 1; i++) {
+            var input = document.createElement("input");
+            input.classList.add("update-field");
+            input.value = cells[i].innerHTML;
+            cells[i].innerHTML = "";
+            cells[i].appendChild(input);
+        }
+
+        while (cells[cells.length - 1].firstChild) {
+            cells[cells.length - 1].removeChild(cells[cells.length - 1].firstChild);
+        }
+
+        var confirmButton = document.createElement("button");
+        confirmButton.innerHTML = "Применить";
+        confirmButton.style = "background-color: green";
+        confirmButton.setAttribute("onClick", "updateFieldQuery(" + id + ")");
+        cells[cells.length - 1].appendChild(confirmButton);
+    }
+
+    function updateFieldQuery(id) {
+        var table = document.getElementById("myTable");
+        console.log(tableName);
     }
 </script>
 <head>
@@ -225,43 +332,21 @@
             </div>
         </div>
     </div>
-    <div style="margin-right: 5%; padding: 8px;">
+    <div style="margin-right: 5%; padding-top: 8px; padding-bottom: 8px">
         <label>
-            <input class="searchField" type="text" placeholder="Поиск..." style="color: rgb(128,128,128); text-indent: 6px">
+            <input class="searchField" type="text" placeholder="Поиск..." style="color: rgb(128,128,128); text-indent: 6px" oninput="searchQuery()" id="SearchInput">
             </input>
         </label>
+        <div class="list-group searchMenu" id="SearchMenu"></div>
     </div>
 </div>
-<div style="display: flex; flex-direction: row">
-    <div>
-        <div class="box" id="DocumentsArray">
-            <div class="list-group">
-                <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
-                    The current link item
-                </a>
-                <a href="#" class="list-group-item list-group-item-action">A second link item</a>
-                <a href="#" class="list-group-item list-group-item-action">A third link item</a>
-                <a href="#" class="list-group-item list-group-item-action">A fourth link item</a>
-                <a class="list-group-item list-group-item-action disabled" aria-disabled="true">A disabled link item</a>
-                <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
-                    The current link item
-                </a>
-                <a href="#" class="list-group-item list-group-item-action">A second link item</a>
-                <a href="#" class="list-group-item list-group-item-action">A third link item</a>
-                <a href="#" class="list-group-item list-group-item-action">A fourth link item</a>
-                <a class="list-group-item list-group-item-action disabled" aria-disabled="true">A disabled link item</a>
-                <a href="#" class="list-group-item list-group-item-action active" aria-current="true">
-                    The current link item
-                </a>
-                <a href="#" class="list-group-item list-group-item-action">A second link item</a>
-                <a href="#" class="list-group-item list-group-item-action">A third link item</a>
-                <a href="#" class="list-group-item list-group-item-action">A fourth link item</a>
-                <a class="list-group-item list-group-item-action disabled" aria-disabled="true">A disabled link item</a>
-            </div>
+<div style="display: flex; flex-direction: row; height: 90%">
+    <div class="box">
+        <div class="list-group" id="DocumentsArray">
         </div>
     </div>
-    <div style="margin-left: auto; margin-right: auto">
-        <table class="table table-striped" id="myTable"></table>
+    <div class="container-table">
+        <table class="table table-striped table-bordered table-custom" id="myTable"></table>
     </div>
 </div>
 </body>

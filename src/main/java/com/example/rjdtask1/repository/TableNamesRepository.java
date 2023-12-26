@@ -2,7 +2,6 @@ package com.example.rjdtask1.repository;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -14,7 +13,7 @@ import java.util.List;
 
 @Component
 @AllArgsConstructor
-public class TableNames {
+public class TableNamesRepository {
 
     private final DataSource dataSource;
 

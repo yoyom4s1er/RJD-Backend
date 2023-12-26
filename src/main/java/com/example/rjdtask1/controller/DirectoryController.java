@@ -4,7 +4,7 @@ import com.example.rjdtask1.model.Directory1;
 import com.example.rjdtask1.model.Directory2;
 import com.example.rjdtask1.repository.Directory1Repository;
 import com.example.rjdtask1.repository.Directory2Repository;
-import com.example.rjdtask1.repository.TableNames;
+import com.example.rjdtask1.repository.TableNamesRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +19,7 @@ public class DirectoryController {
 
     private Directory1Repository directoryRepository;
     private Directory2Repository directory2Repository;
-    private TableNames tableNames;
+    private TableNamesRepository tableNames;
 
     @GetMapping("/directory1")
     public List<Directory1> directory1GetAll() {
