@@ -8,12 +8,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Entity(name = "k1")
+@Entity
 @Table(name = "k1", schema = "public")
 public class Classifier1 {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "k1_seq")
+    @SequenceGenerator(name = "k1_seq", sequenceName = "k1_id_seq", allocationSize = 1)
     @Column(name = "id")
     private long id;
     @Column(name = "column2")

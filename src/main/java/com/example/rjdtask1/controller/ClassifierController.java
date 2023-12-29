@@ -31,6 +31,13 @@ public class ClassifierController {
         return classifier1Repository.findById(id).get();
     }
 
+    @PostMapping("/k1")
+    public ResponseEntity addK1(@RequestBody Classifier1 classifier1) {
+        classifier1Repository.save(classifier1);
+
+        return ResponseEntity.ok(classifier1);
+    }
+
     @PutMapping("/k1")
     public ResponseEntity updateK1(@RequestBody Classifier1 classifier1) {
         System.out.println(classifier1);

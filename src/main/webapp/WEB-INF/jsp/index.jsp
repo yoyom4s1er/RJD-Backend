@@ -81,6 +81,8 @@
 
                 header.classList.add("table-header");
 
+                getAddField(table);
+
                 for (let i = 0; i < result.length; i++) {
                     var row = table.insertRow(table.rows.length);
                     var cell1 = row.insertCell(0);
@@ -130,9 +132,13 @@
                 cell5Header.innerHTML = "Column5";
                 cell6Header.innerHTML = "Column6";
                 cell7Header.innerHTML = "Column7";
-                cell8Header.innerHTML = "Действие";
+                cell8Header.innerHTML = "Действия";
 
                 header.classList.add("table-header");
+
+                getAddField(table);
+
+                oldValues = [];
 
                 for (let i = 0; i < result.length; i++) {
                     var row = table.insertRow(table.rows.length);
@@ -158,8 +164,67 @@
                     var updateButton = document.createElement("button");
                     updateButton.innerHTML = "Изменить";
                     updateButton.setAttribute("onClick", "updateFieldUI(" + result[i].id + ")");
+                    updateButton.classList.add("update-button");
                     cell8.appendChild(updateButton);
                 }
+            }
+        })
+    }
+
+    function getAddField(table) {
+        var row = table.insertRow(table.rows.length);
+        var rowCount = table.rows[0].cells.length;
+
+        for (let i = 0; i < rowCount; i++) {
+            row.insertCell(i);
+        }
+
+        for (let i = 1; i < row.cells.length - 1; i++) {
+            var input = document.createElement("input");
+            input.classList.add("form-control");
+            input.classList.add("add-form");
+            row.cells[i].innerHTML = "";
+            row.cells[i].appendChild(input);
+            row.cells[i].style.padding = "4px";
+        }
+
+        var addButton = document.createElement("button");
+        addButton.innerHTML = "Добавить";
+        addButton.classList.add("add-button");
+        addButton.setAttribute("onClick", "addK1Query()");
+        row.cells[row.cells.length - 1].appendChild(addButton);
+        row.cells[row.cells.length - 1].style.height = row.style.height + "px";
+    }
+
+    function addK1Query() {
+        var table = document.getElementById("myTable");
+        var cells = table.rows[1].cells;
+
+        var array = [];
+        array[0] = cells[0].innerHTML;
+        for (let i = 1; i < cells.length - 1; i++) {
+            array[i] = cells[i].children[0].value;
+        }
+
+        var jsonBody = {
+            "column2": array[1],
+            "column3": parseInt(array[2]),
+            "column4": parseInt(array[3]),
+            "column5": parseInt(array[4]),
+            "column6": parseInt(array[5]),
+            "column7": parseInt(array[6])
+        }
+
+        $.ajax({
+            type:'POST',
+            url:'/api/classifiers/k1',
+            headers:{
+                Accept : "application/json; charset=utf8",
+                "Content-Type" : "application/json; charset=utf8"
+            },
+            data: JSON.stringify(jsonBody),
+            success: function (result) {
+
             }
         })
     }
@@ -275,16 +340,26 @@
         }
     });
 
+    var oldValues = [];
+
     function updateFieldUI(id) {
         var table = document.getElementById("myTable");
-        var cells = table.rows[id].cells;
+        var cells = table.rows[id + 1].cells;
+
+        var oldField = []
+        oldField.push(cells[0].innerHTML)
+
         for (let i = 1; i < cells.length - 1; i++) {
             var input = document.createElement("input");
-            input.classList.add("update-field");
+            input.classList.add("form-control");
             input.value = cells[i].innerHTML;
             cells[i].innerHTML = "";
             cells[i].appendChild(input);
+
+            oldField.push(cells[i].firstChild.value);
         }
+
+        oldValues.push(oldField);
 
         while (cells[cells.length - 1].firstChild) {
             cells[cells.length - 1].removeChild(cells[cells.length - 1].firstChild);
@@ -292,14 +367,91 @@
 
         var confirmButton = document.createElement("button");
         confirmButton.innerHTML = "Применить";
-        confirmButton.style = "background-color: green";
+        confirmButton.classList.add("confirm-button");
         confirmButton.setAttribute("onClick", "updateFieldQuery(" + id + ")");
         cells[cells.length - 1].appendChild(confirmButton);
+
+        var cancelButton = document.createElement("button");
+        cancelButton.innerHTML = "Отменить";
+        cancelButton.classList.add("cancel-button");
+        cancelButton.setAttribute("onClick", "CancelUpdate(" + id + ")");
+        cells[cells.length - 1].appendChild(cancelButton);
+    }
+
+    function CancelUpdate(id) {
+        var table = document.getElementById("myTable");
+        var cells = table.rows[id + 1].cells;
+
+        var oldField = oldValues.find(value => parseInt(value[0]) === id);
+
+        console.log(oldField)
+
+        for (let i = 1; i < cells.length - 1; i++) {
+            cells[i].removeChild(cells[i].firstChild);
+            cells[i].innerHTML = oldField[i];
+        }
+
+        while (cells[cells.length - 1].firstChild) {
+            cells[cells.length - 1].removeChild(cells[cells.length - 1].firstChild);
+        }
+
+        var updateButton = document.createElement("button");
+        updateButton.innerHTML = "Изменить";
+        updateButton.setAttribute("onClick", "updateFieldUI(" + id + ")");
+        updateButton.classList.add("update-button");
+        cells[cells.length - 1].appendChild(updateButton);
+
+        oldValues = oldValues.filter(value => parseInt(value[0]) !== id);
     }
 
     function updateFieldQuery(id) {
         var table = document.getElementById("myTable");
-        console.log(tableName);
+        var cells = table.rows[id + 1].cells;
+
+        var array = [];
+        array[0] = cells[0].innerHTML;
+        for (let i = 1; i < cells.length - 1; i++) {
+            array[i] = cells[i].children[0].value;
+        }
+
+        var jsonBody = {
+            "id": parseInt(array[0]),
+            "column2": array[1],
+            "column3": parseInt(array[2]),
+            "column4": parseInt(array[3]),
+            "column5": parseInt(array[4]),
+            "column6": parseInt(array[5]),
+            "column7": parseInt(array[6])
+        }
+
+        $.ajax({
+            type:'PUT',
+            url:'/api/classifiers/k1',
+            headers:{
+                Accept : "application/json; charset=utf8",
+                "Content-Type" : "application/json; charset=utf8"
+            },
+            data: JSON.stringify(jsonBody),
+            success: function (result) {
+
+                for (let i = 1; i < cells.length - 1; i++) {
+                    cells[i].removeChild(cells[i].firstChild);
+                    cells[i].innerHTML = array[i];
+                }
+
+                while (cells[cells.length - 1].firstChild) {
+                    cells[cells.length - 1].removeChild(cells[cells.length - 1].firstChild);
+                }
+
+                var updateButton = document.createElement("button");
+                updateButton.innerHTML = "Изменить";
+                updateButton.setAttribute("onClick", "updateFieldUI(" + array[0] + ")");
+                updateButton.classList.add("update-button");
+                cells[cells.length - 1].appendChild(updateButton);
+
+                oldValues = oldValues.filter(value => parseInt(value[0]) !== id);
+            }
+        })
     }
 </script>
 <head>

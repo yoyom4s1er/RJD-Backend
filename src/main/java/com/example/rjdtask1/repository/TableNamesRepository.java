@@ -21,13 +21,15 @@ public class TableNamesRepository {
             "FROM information_schema.tables " +
             "WHERE table_schema='public'" +
             "AND table_type='BASE TABLE'" +
-            "AND table_name LIKE 'd%'";
+            "AND table_name LIKE 'd%'" +
+            "ORDER BY table_name ASC";
 
     private final String SELECT_CLASSIFIER_NAMES = "SELECT table_name " +
             "FROM information_schema.tables " +
             "WHERE table_schema='public'" +
             "AND table_type='BASE TABLE'" +
-            "AND table_name LIKE 'k%'";
+            "AND table_name LIKE 'k%'" +
+            "ORDER BY table_name ASC";
 
     public List<String> getDirectoryTables() {
         List<String> names = new ArrayList<>();
