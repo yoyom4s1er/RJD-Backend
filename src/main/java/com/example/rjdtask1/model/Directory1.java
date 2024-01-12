@@ -13,7 +13,8 @@ import lombok.NoArgsConstructor;
 public class Directory1 {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "directory1_seq")
+    @SequenceGenerator(name = "directory1_seq", sequenceName = "directory1_id_seq", allocationSize = 1)
     @Column(name = "id")
     private long id;
     @Column(name = "col2")

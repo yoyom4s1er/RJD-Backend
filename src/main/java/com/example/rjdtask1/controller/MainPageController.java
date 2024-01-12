@@ -7,11 +7,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @AllArgsConstructor
 @Controller
-@RequestMapping("api/page")
+@RequestMapping("page")
 public class MainPageController {
 
     @GetMapping("")
     public String getAll() {
         return "index";
+    }
+
+    @GetMapping("/test")
+    public String getTest() {
+        return "test";
     }
 }

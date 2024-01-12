@@ -24,6 +24,7 @@
 
 .header1 {
     width: 100%;
+    height: 40px;
     background-color: red;
     padding-left: 2%;
     text-align: center;
@@ -32,24 +33,20 @@
     color: white;
     justify-content: space-between;
     display: flex;
-    flex-direction: row;
     position: sticky;
     top: 0;
     z-index: 999;
 }
 
-.header1 > * {
-    display: flex;
-    flex-direction: row;
-}
-
 .header1Text {
-    padding-top: 8px;
-    padding-bottom: 8px;
     padding-left: 8px;
     padding-right: 8px;
     cursor: pointer;
     user-select: none;
+    display: flex;
+    justify-content: center; /* Align horizontal */
+    align-items: center; /* Align vertical */
+    font-size: 115%;
 }
 
 .header1Text:active{
@@ -178,10 +175,10 @@ html {
 }
 
 .searchMenu {
-    position: fixed;
-    top: 46px;
     background: red;
-    width: 185px;
+    width: 196px;
+    position: fixed;
+    top: 40px;
 }
 
 .container-table {
@@ -205,6 +202,7 @@ html {
     padding-top: 2px;
     padding-bottom: 2px;
     text-align: center;
+    width: 100%;
 }
 
 .confirm-button {
@@ -216,6 +214,7 @@ html {
     padding-top: 2px;
     padding-bottom: 2px;
     text-align: center;
+    width: 100%;
 }
 
 .cancel-button {
@@ -228,6 +227,7 @@ html {
     padding-bottom: 2px;
     text-align: center;
     margin-top: 6px;
+    width: 100%;
 }
 
 .add-button {
@@ -239,9 +239,23 @@ html {
     padding-top: 2px;
     padding-bottom: 2px;
     text-align: center;
+    width: 100%;
 }
 
 .add-form {
     height: 33px;
+}
+
+.delete-button {
+    background-color: orangered;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    color: white;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    text-align: center;
+    width: 100%;
+    margin-top: 2px;
 }
 

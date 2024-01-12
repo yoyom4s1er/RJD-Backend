@@ -6,9 +6,8 @@ import com.example.rjdtask1.repository.Directory1Repository;
 import com.example.rjdtask1.repository.Directory2Repository;
 import com.example.rjdtask1.repository.TableNamesRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,6 +23,13 @@ public class DirectoryController {
     @GetMapping("/directory1")
     public List<Directory1> directory1GetAll() {
         return directoryRepository.findAll();
+    }
+
+    @PostMapping("/directory1")
+    public ResponseEntity<Directory1> addDirectory1(@RequestBody Directory1 directory1) {
+        directoryRepository.save(directory1);
+
+        return ResponseEntity.ok(directory1);
     }
 
     @GetMapping("/directory2")

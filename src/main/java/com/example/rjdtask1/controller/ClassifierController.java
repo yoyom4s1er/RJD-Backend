@@ -40,8 +40,13 @@ public class ClassifierController {
 
     @PutMapping("/k1")
     public ResponseEntity updateK1(@RequestBody Classifier1 classifier1) {
-        System.out.println(classifier1);
         classifier1Repository.save(classifier1);
+        return ResponseEntity.ok(null);
+    }
+
+    @DeleteMapping("k1/{id}")
+    public ResponseEntity deleteK1(@PathVariable long id) {
+        classifier1Repository.deleteById(id);
         return ResponseEntity.ok(null);
     }
     @GetMapping("/k2")
