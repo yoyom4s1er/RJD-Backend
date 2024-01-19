@@ -5,29 +5,83 @@
     <title>ИВЦ ЖА</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 </head>
 <script>
 
+    const serverAdress = "127.0.0.1:8080";
     const tableInfo = [
         {
             "tableName":"directory1",
             "url":"directories/directory1",
-            "parserFunction":"directory1Parser"
+            "parserFunction":"directory1Parser",
+            "columns":[
+                "Id",
+                "Column2",
+                "Column3",
+                "Column4",
+                "Column5"
+            ],
+            "dataTypes":[
+                "number",
+                "string",
+                "number",
+                "number",
+                "number"
+            ]
         },
         {
             "tableName":"k1",
             "url":"classifiers/k1",
-            "parserFunction":"k1Parser"
+            "parserFunction":"k1Parser",
+            "columns":[
+                "Id",
+                "Column2",
+                "Column3",
+                "Column4",
+                "Column5",
+                "Column6",
+                "Column7"
+            ],
+            "dataTypes":[
+                "number",
+                "string",
+                "number",
+                "number",
+                "number",
+                "number",
+                "number"
+            ]
         },
         {
             "tableName":"k2",
             "url":"classifiers/k2",
-            "parserFunction":"k2Parser"
+            "parserFunction":"k2Parser",
+            "columns":[
+                "Id",
+                "Column2",
+                "Column3",
+                "Column4",
+                "Column5",
+                "Column6",
+                "Column7"
+            ],
+            "dataTypes":[
+                "number",
+                "string",
+                "number",
+                "number",
+                "number",
+                "number",
+                "number"
+            ]
         }
     ]
+
+    var columnOrders = [];
 
     function directory1Parser(row) {
         var cells = row.cells;
@@ -157,21 +211,38 @@
             success: function (result) {
                 var table = document.getElementById("myTable");
                 table.name = value;
+                document.getElementById("TableName").innerHTML = value;
                 table.innerHTML = "";
-                var header = table.insertRow(0);
-                var cell1Header = header.insertCell(0);
-                var cell2Header = header.insertCell(1);
-                var cell3Header = header.insertCell(2);
-                var cell4Header = header.insertCell(3);
-                var cell5Header = header.insertCell(4);
-                var cell6Header = header.insertCell(5);
+                var currentTable = tableInfo.find(value => value.tableName === table.name);
 
-                cell1Header.innerHTML = "Id";
-                cell2Header.innerHTML = "Column2";
-                cell3Header.innerHTML = "Column3";
-                cell4Header.innerHTML = "Column4";
-                cell5Header.innerHTML = "Column5";
-                cell6Header.innerHTML = "Действия";
+                var excelRef = document.getElementById("ExcelRef");
+                excelRef.style = "visibility: visible";
+                //excelRef.action = "/api/" + currentTable.url + "/excel";
+                table.innerHTML = "";
+
+                var header = table.insertRow(0);
+                header.style = "user-select: none";
+
+                for (let i = 0; i < 5; i++) {
+                    var cellHeader = header.insertCell(i);
+                    var bElement = document.createElement("b");
+
+                    var sortIcon = document.createElement("i");
+                    sortIcon.classList.add("fa");
+                    sortIcon.classList.add("fa-fw");
+                    sortIcon.classList.add("fa-sort");
+                    sortIcon.id = "SortIcon-" + i;
+
+                    cellHeader.appendChild(bElement);
+                    cellHeader.appendChild(sortIcon);
+                    bElement.innerHTML = currentTable.columns[i];
+                    cellHeader.setAttribute("onClick", "sortTable(" + i +")");
+                }
+                var bElement = document.createElement("b");
+                bElement.innerHTML = "Действия";
+                header.insertCell(5).appendChild(bElement);
+
+                columnOrders = [0,0,0,0,0];
 
                 header.classList.add("table-header");
 
@@ -195,25 +266,37 @@
             success: function (result) {
                 var table = document.getElementById("myTable");
                 table.name = value;
-                table.innerHTML = "";
-                var header = table.insertRow(0);
-                var cell1Header = header.insertCell(0);
-                var cell2Header = header.insertCell(1);
-                var cell3Header = header.insertCell(2);
-                var cell4Header = header.insertCell(3);
-                var cell5Header = header.insertCell(4);
-                var cell6Header = header.insertCell(5);
-                var cell7Header = header.insertCell(6);
-                var cell8Header = header.insertCell(7);
+                document.getElementById("TableName").innerHTML = value;
+                var currentTable = tableInfo.find(value => value.tableName === table.name);
 
-                cell1Header.innerHTML = "Id";
-                cell2Header.innerHTML = "Column2";
-                cell3Header.innerHTML = "Column3";
-                cell4Header.innerHTML = "Column4";
-                cell5Header.innerHTML = "Column5";
-                cell6Header.innerHTML = "Column6";
-                cell7Header.innerHTML = "Column7";
-                cell8Header.innerHTML = "Действия";
+                var excelRef = document.getElementById("ExcelRef");
+                excelRef.style = "visibility: visible";
+                //excelRef.action = "/api/" + currentTable.url + "/excel";
+                table.innerHTML = "";
+
+                var header = table.insertRow(0);
+                header.style = "user-select: none";
+
+                for (let i = 0; i < 7; i++) {
+                    var cellHeader = header.insertCell(i);
+                    var bElement = document.createElement("b");
+
+                    var sortIcon = document.createElement("i");
+                    sortIcon.classList.add("fa");
+                    sortIcon.classList.add("fa-fw");
+                    sortIcon.classList.add("fa-sort");
+                    sortIcon.id = "SortIcon-" + i;
+
+                    cellHeader.appendChild(bElement);
+                    cellHeader.appendChild(sortIcon);
+                    bElement.innerHTML = currentTable.columns[i];
+                    cellHeader.setAttribute("onClick", "sortTable(" + i +")");
+                }
+                var bElement = document.createElement("b");
+                bElement.innerHTML = "Действия";
+                header.insertCell(7).appendChild(bElement);
+
+                columnOrders = [0,0,0,0,0,0,0];
 
                 header.classList.add("table-header");
 
@@ -298,6 +381,8 @@
             },
             success: function (result) {
                 document.getElementById("myTable").innerHTML = "";
+                document.getElementById("TableName").innerHTML = "";
+                document.getElementById("ExcelRef").style = "visibility: hidden";
                 var array = document.getElementById("DocumentsArray");
                 while (array.firstChild) {
                     array.removeChild(array.firstChild);
@@ -326,6 +411,8 @@
             },
             success: function (result) {
                 document.getElementById("myTable").innerHTML = "";
+                document.getElementById("TableName").innerHTML = "";
+                document.getElementById("ExcelRef").style = "visibility: hidden";
                 var array = document.getElementById("DocumentsArray");
                 while (array.firstChild) {
                     array.removeChild(array.firstChild);
@@ -409,7 +496,7 @@
 
     var oldValues = [];
 
-    function findRowIndexById(id) {
+    function findRowById(id) {
         var table = document.getElementById("myTable");
         for (let i = 0; i < table.rows.length; i++) {
             if (table.rows[i].firstChild.innerHTML === id.toString()) {
@@ -422,9 +509,7 @@
 
     function updateFieldUI(id) {
         var table = document.getElementById("myTable");
-        var cells = findRowIndexById(id).cells;
-
-        console.log(findRowIndexById(id));
+        var cells = findRowById(id).cells;
 
         var oldField = []
         oldField.push(cells[0].innerHTML)
@@ -460,7 +545,7 @@
 
     function CancelUpdate(id) {
         var table = document.getElementById("myTable");
-        var cells = findRowIndexById(id).cells;
+        var cells = findRowById(id).cells;
 
         var oldField = oldValues.find(value => parseInt(value[0]) === id);
 
@@ -471,49 +556,39 @@
 
         cells[cells.length - 1].remove();
 
-        addButtonsToRow(findRowIndexById(id), id);
+        addButtonsToRow(findRowById(id), id);
 
         oldValues = oldValues.filter(value => parseInt(value[0]) !== id);
     }
 
     function updateFieldQuery(id) {
         var table = document.getElementById("myTable");
-        var cells = findRowIndexById(id).cells;
+        var currentTableInfo = tableInfo.find(value => value.tableName === table.name);
 
-        var array = [];
-        array[0] = cells[0].innerHTML;
-        for (let i = 1; i < cells.length - 1; i++) {
-            array[i] = cells[i].children[0].value;
-        }
+        var data = window[currentTableInfo.parserFunction](findRowById(id));
 
-        var jsonBody = {
-            "id": parseInt(array[0]),
-            "column2": array[1],
-            "column3": parseInt(array[2]),
-            "column4": parseInt(array[3]),
-            "column5": parseInt(array[4]),
-            "column6": parseInt(array[5]),
-            "column7": parseInt(array[6])
-        }
+        cells = findRowById(id).cells;
 
         $.ajax({
             type:'PUT',
-            url:'/api/classifiers/k1',
+            url:'/api/' + currentTableInfo.url,
             headers:{
                 Accept : "application/json; charset=utf8",
                 "Content-Type" : "application/json; charset=utf8"
             },
-            data: JSON.stringify(jsonBody),
+            data: JSON.stringify(data),
             success: function (result) {
 
                 for (let i = 1; i < cells.length - 1; i++) {
+                    var string = cells[i].firstChild.value;
                     cells[i].removeChild(cells[i].firstChild);
-                    cells[i].innerHTML = array[i];
+
+                    cells[i].innerHTML = string;
                 }
 
                 cells[cells.length - 1].remove();
 
-                addButtonsToRow(findRowIndexById(id), id);
+                addButtonsToRow(findRowById(id), id);
 
                 oldValues = oldValues.filter(value => parseInt(value[0]) !== id);
             }
@@ -521,18 +596,161 @@
     }
 
     function deleteFieldQuery(id) {
+        var table = document.getElementById("myTable");
+        var currentTableInfo = tableInfo.find(value => value.tableName === table.name);
+
         $.ajax({
             type:'DELETE',
-            url:'/api/classifiers/k1/' + id,
+            url:'/api/' + currentTableInfo.url + "/" + id,
             headers:{
                 Accept : "application/json; charset=utf8",
                 "Content-Type" : "application/json; charset=utf8"
             },
             success: function (result) {
-                var table = document.getElementById("myTable");
-                findRowIndexById(id).remove();
+                findRowById(id).remove();
             }
         })
+    }
+
+    function sortTable(columnNumber) {
+        restoreSortingTable();
+        var table = document.getElementById("myTable");
+        var currentTableInfo = tableInfo.find(value => value.tableName === table.name);
+        var icon = document.getElementById("SortIcon-" + columnNumber);
+        icon.classList.remove("fa-sort");
+        icon.classList.remove("fa-sort-asc");
+        icon.classList.remove("fa-sort-desc");
+
+        if (columnOrders[columnNumber] !== 1) {
+            columnOrders[columnNumber] = 1;
+            icon.classList.add("fa-sort-desc");
+        }
+        else {
+            columnOrders[columnNumber] = -1;
+            icon.classList.add("fa-sort-asc");
+        }
+
+        for (let i = 0; i < columnOrders.length; i++) {
+            if (i !== columnNumber) {
+                columnOrders[i] = 0;
+                icon.classList.add("fa-sort");
+                let otherIcon = document.getElementById("SortIcon-"+i);
+                otherIcon.classList.remove("fa-sort-asc");
+                otherIcon.classList.remove("fa-sort-desc");
+                otherIcon.classList.add("fa-sort");
+            }
+        }
+
+        var isSorting = true;
+        while (isSorting) {
+            var rows = table.rows;
+            isSorting = false;
+
+            for (let i = 2; i < rows.length - 1; i++) {
+                if (currentTableInfo.dataTypes[columnNumber] === "number") {
+                    var value1 = parseInt(rows[i].cells[columnNumber].innerHTML);
+                    var value2 = parseInt(rows[i+1].cells[columnNumber].innerHTML);
+
+                    if (columnOrders[columnNumber] !== 1) {
+                        if (value1 < value2) {
+                            rows[i].parentNode.insertBefore(rows[i+1], rows[i]);
+                            isSorting = true;
+                        }
+                    }
+                    else {
+                        if (value1 > value2) {
+                            rows[i].parentNode.insertBefore(rows[i+1], rows[i]);
+                            isSorting = true;
+                        }
+                    }
+
+                }
+                else {
+                    var value1 = rows[i].cells[columnNumber].innerHTML;
+                    var value2 = rows[i+1].cells[columnNumber].innerHTML;
+
+                    if (columnOrders[columnNumber] !== 1) {
+                        if (strcmp(value1, value2) === -1) {
+                            rows[i].parentNode.insertBefore(rows[i+1], rows[i]);
+                            isSorting = true;
+                        }
+                    }
+                    else {
+                        if (strcmp(value1, value2) === 1) {
+                            rows[i].parentNode.insertBefore(rows[i+1], rows[i]);
+                            isSorting = true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    function restoreSortingTable() {
+        let columnNumber = 0;
+        var table = document.getElementById("myTable");
+        var currentTableInfo = tableInfo.find(value => value.tableName === table.name);
+
+        var isSorting = true;
+        while (isSorting) {
+            var rows = table.rows;
+            isSorting = false;
+
+            for (let i = 2; i < rows.length - 1; i++) {
+                if (currentTableInfo.dataTypes[columnNumber] === "number") {
+                    var value1 = parseInt(rows[i].cells[columnNumber].innerHTML);
+                    var value2 = parseInt(rows[i+1].cells[columnNumber].innerHTML);
+
+                    if (value1 > value2) {
+                        rows[i].parentNode.insertBefore(rows[i+1], rows[i]);
+                        isSorting = true;
+                    }
+
+                }
+                else {
+                    var value1 = rows[i].cells[columnNumber].innerHTML;
+                    var value2 = rows[i+1].cells[columnNumber].innerHTML;
+
+                    if (strcmp(value1, value2) === 1) {
+                        rows[i].parentNode.insertBefore(rows[i+1], rows[i]);
+                        isSorting = true;
+                    }
+                }
+            }
+        }
+    }
+
+    function getExcelURL() {
+        var table = document.getElementById("myTable");
+        let currentTable = tableInfo.find(value => value.tableName === table.name);
+        let url = "http://127.0.0.1:8080/api/" + currentTable.url + "/excel";
+        let value = columnOrders.find((value, index) => {
+            if (value !== 0) {
+                return 1;
+            }
+        })
+
+        if (value === undefined) {
+            value = 0;
+        }
+
+        let sortedColumn = columnOrders.findIndex(el => el === value);
+        let sortOrder = columnOrders[sortedColumn] === -1 ? "DESC" : "ASC";
+        url+= "?sortOrder=" + sortOrder + "&sortColumnName=" + currentTable.columns[sortedColumn];
+
+        console.log(url);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = url.split('/').pop();
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+
+    function strcmp(a, b)
+    {
+        return (a<b?-1:(a>b?1:0));
     }
 </script>
 <body style="margin: 0">
@@ -540,7 +758,7 @@
     <div style="display: flex; flex-direction: row">
         <div class="header1Text" onclick="loadDirectoryNames()">Справочники</div>
         <div class="header1Text" onclick="loadClassifierNames()">Классификаторы</div>
-        <div class="header1Text" onclick="">Справки</div>
+        <div class="header1Text" onclick="sortTable()">Справки</div>
     </div>
     <div style="display: flex; align-items: center; margin-right: 50px">
         <label style="margin-bottom: 0">
@@ -550,13 +768,21 @@
         <div class="list-group searchMenu" id="SearchMenu"></div>
     </div>
 </div>
-<div style="display: flex; flex-direction: row; height: 90%">
+<div style="display: flex; flex-direction: row; height: 90%; position: relative">
     <div class="box">
         <div class="list-group" id="DocumentsArray">
         </div>
     </div>
-    <div class="container-table" id="containerTable">
-        <table class="table table-striped table-bordered table-custom" id="myTable"></table>
+    <div class="container-for-table-and-extra">
+        <div style="display: flex; flex-direction: row; justify-content: space-between">
+            <h2 id="TableName"></h2>
+            <form class="excel-form" id="ExcelRef" action="javascript:getExcelURL();" style="visibility: hidden">
+                <input class="export-excel-button" type="submit" value="Экспорт в Excel" />
+            </form>
+        </div>
+        <div class="container-table" id="containerTable">
+            <table class="table table-striped table-bordered table-custom" id="myTable"></table>
+        </div>
     </div>
 </div>
 <div class="modal fade" id="myModal" role="dialog">
