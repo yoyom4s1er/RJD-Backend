@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.example</groupId>
-    <artifactId>RJDTask1</artifactId>
+    <artifactId>RJDBackend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>RJDTask1</name>
     <description>RJDTask1</description>

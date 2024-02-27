@@ -20,7 +20,7 @@ import java.util.Map;
 
 public abstract class TableExcelExporter<T> {
 
-    private void writeHeaderLine(XSSFWorkbook workbook, String sheetName) {
+    protected void writeHeaderLine(XSSFWorkbook workbook, String sheetName) {
         XSSFSheet sheet = workbook.createSheet(sheetName);
 
         XSSFRow row = sheet.createRow(0);
@@ -35,36 +35,29 @@ public abstract class TableExcelExporter<T> {
         stylizeBackgroundHeaderRow(row);
     }
 
-    protected abstract List<String> getHeaderNames();
+    protected List<String> getHeaderNames() {
+        return null;
+    };
 
     protected void createCell(XSSFRow row, int columnCount, Object value, XSSFCellStyle style) {
-        XSSFCell cell = row.createCell(columnCount);
+        XSSFCell cell = row.getCell(columnCount);
+        if (cell == null) {
+            cell = row.createCell(columnCount);
+        }
         if (value instanceof Integer) {
             cell.setCellValue((Integer) value);
         } else if (value instanceof Boolean) {
             cell.setCellValue((Boolean) value);
         }else if (value instanceof Long){
             cell.setCellValue((Long) value);
+        } else if (value instanceof Float){
+            cell.setCellValue((Float) value);
         } else {
             cell.setCellValue((String) value);
         }
-        cell.setCellStyle(style);
+        //cell.setCellStyle(style);
     }
 
-    private void writeDataLines(XSSFWorkbook workbook, List<T> entities) {
-        int rowCount = 1;
-
-        XSSFSheet sheet = workbook.getSheetAt(0);
-
-        for (T entity : entities) {
-            XSSFRow row = sheet.createRow(rowCount++);
-            createCells(row, entity, getDataStyle(workbook));
-            //setDataRowBorders(row);
-            stylizeBackgroundDataRow(row);
-        }
-    }
-
-    protected abstract void createCells(XSSFRow row,T entity, XSSFCellStyle style);
 
     private void manualSizeWidthColumns(XSSFWorkbook workbook) {
         XSSFSheet sheet = workbook.getSheetAt(0);
@@ -110,16 +103,7 @@ public abstract class TableExcelExporter<T> {
             sheet.setColumnWidth(i, (int)(sheet.getColumnWidth(i)*1.1));
         }
     }
-    public void exportToStream(List<T> entities, String sheetName, ByteArrayOutputStream stream) throws IOException {
-        XSSFWorkbook workbook = new XSSFWorkbook();
-        writeHeaderLine(workbook, sheetName);
-        writeDataLines(workbook, entities);
-        autoWidthColumns(workbook);
-        //setTableBorders(workbook);
-
-        workbook.write(stream);
-        workbook.close();
-    }
+    public abstract void exportToStream(ByteArrayOutputStream stream, String year) throws IOException;
     private double getCellWidth(String cellText, Font font) {
         AttributedString attributedString = new AttributedString(cellText);
         attributedString.addAttribute(TextAttribute.FAMILY, font, 0, cellText.length());

@@ -5,8 +5,6 @@ import com.example.rjdtask1.model.Classifier2;
 import com.example.rjdtask1.repository.Classifier1Repository;
 import com.example.rjdtask1.repository.Classifier2Repository;
 import com.example.rjdtask1.repository.TableNamesRepository;
-import com.example.rjdtask1.service.excelExporter.K1Exporter;
-import com.example.rjdtask1.service.excelExporter.K2Exporter;
 import com.example.rjdtask1.service.excelExporter.TableExcelExporter;
 import lombok.AllArgsConstructor;
 import org.hibernate.query.Order;
@@ -30,9 +28,6 @@ public class ClassifierController {
     private Classifier1Repository classifier1Repository;
     private Classifier2Repository classifier2Repository;
     private TableNamesRepository tableNames;
-
-    private K1Exporter k1Exporter;
-    private K2Exporter k2Exporter;
 
     @GetMapping("/k1")
     public List<Classifier1> k1GetAll() {
@@ -84,7 +79,6 @@ public class ClassifierController {
             HttpHeaders header = new HttpHeaders();
             header.setContentType(new MediaType("application", "force-download"));
             header.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Klassifikator1.xlsx");
-            k1Exporter.exportToStream(classifier1Repository.findAll(Sort.by(direction, sortColumn)), "Классификатор 1", stream);
             return new ResponseEntity<>(new ByteArrayResource(stream.toByteArray()),
                     header, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -137,7 +131,6 @@ public class ClassifierController {
             HttpHeaders header = new HttpHeaders();
             header.setContentType(new MediaType("application", "force-download"));
             header.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Klassifikator2.xlsx");
-            k2Exporter.exportToStream(classifier2Repository.findAll(Sort.by(direction, sortColumn)), "Классификатор 1", stream);
             return new ResponseEntity<>(new ByteArrayResource(stream.toByteArray()),
                     header, HttpStatus.CREATED);
         } catch (Exception e) {

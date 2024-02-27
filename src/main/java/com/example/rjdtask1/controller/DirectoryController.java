@@ -6,7 +6,6 @@ import com.example.rjdtask1.model.Directory2;
 import com.example.rjdtask1.repository.Directory1Repository;
 import com.example.rjdtask1.repository.Directory2Repository;
 import com.example.rjdtask1.repository.TableNamesRepository;
-import com.example.rjdtask1.service.excelExporter.Directory1Exporter;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Sort;
@@ -28,7 +27,6 @@ public class DirectoryController {
     private Directory1Repository directoryRepository;
     private Directory2Repository directory2Repository;
     private TableNamesRepository tableNames;
-    private Directory1Exporter directory1Exporter;
 
     @GetMapping("/directory1")
     public List<Directory1> directory1GetAll() {
@@ -74,7 +72,6 @@ public class DirectoryController {
             HttpHeaders header = new HttpHeaders();
             header.setContentType(new MediaType("application", "force-download"));
             header.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Spravochnik1.xlsx");
-            directory1Exporter.exportToStream(directoryRepository.findAll(Sort.by(direction, sortColumn)), "Справочник 1", stream);
             return new ResponseEntity<>(new ByteArrayResource(stream.toByteArray()),
                     header, HttpStatus.CREATED);
         } catch (Exception e) {
