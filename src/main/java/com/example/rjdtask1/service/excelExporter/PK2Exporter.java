@@ -19,7 +19,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 @Service
-public class PK2Exporter extends TableExcelExporter<PK2Data>{
+public class PK2Exporter {
 
     private final Map<String, Integer> rowIndexes;
     private final Map<String, Integer> countryCodes;
@@ -84,7 +84,6 @@ public class PK2Exporter extends TableExcelExporter<PK2Data>{
         createCell(row, 15, entity.getKtkCountPercentage(), style);
     }
 
-    @Override
     protected void createCell(XSSFRow row, int columnCount, Object value, XSSFCellStyle style) {
         XSSFCell cell = row.getCell(columnCount);
         if (value instanceof Integer) {
@@ -141,11 +140,13 @@ public class PK2Exporter extends TableExcelExporter<PK2Data>{
         workbook.close();
     }
 
-    public void exportToStream(ByteArrayOutputStream stream, String year) throws IOException {
-        ExcelFileId excelFileId = new ExcelFileId("PK2", year);
-        if (excelFileRepository.existsById(excelFileId)) {
-            stream.write(excelFileRepository.getReferenceById(excelFileId).getFileData());
-            return;
+    public void exportToStream(ByteArrayOutputStream stream, String year, boolean forceGenerate) throws IOException {
+        if (!forceGenerate) {
+            ExcelFileId excelFileId = new ExcelFileId("PK2", year);
+            if (excelFileRepository.existsById(excelFileId)) {
+                stream.write(excelFileRepository.getReferenceById(excelFileId).getFileData());
+                return;
+            }
         }
 
         File file = ResourceUtils.getFile("classpath:PK_2.xlsx");
@@ -233,7 +234,6 @@ public class PK2Exporter extends TableExcelExporter<PK2Data>{
         createCells(sheet.getRow(rowIndexes.get("Собственных")), noPrinadl, style);
     }
 
-    @Override
     protected XSSFCellStyle getDataStyle(XSSFWorkbook workbook) {
         return workbook.getSheetAt(0).getRow(5).getCell(0).getCellStyle();
     }

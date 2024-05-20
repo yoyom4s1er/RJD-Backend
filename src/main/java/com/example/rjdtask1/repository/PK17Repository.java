@@ -26,8 +26,8 @@ public class PK17Repository {
             "\tap.b_ind,\n" +
             "\tp.masbr \n" +
             "from\n" +
-            "\tperkon.per2019 p\t\n" +
-            "left join perkon.abd_pk2019 ap using (num)\n" +
+            "\t $thirdTable p\t\n" +
+            "left join $thirdABD ap using (num)\n" +
             "where\n" +
             "\tp.prinadl = '1'\n" +
             "union all\n" +
@@ -38,8 +38,8 @@ public class PK17Repository {
             "\tap.b_ind,\n" +
             "\tp.masbr \n" +
             "from\n" +
-            "\tperkon.per2020 p\n" +
-            "left join perkon.abd_pk2020 ap using (num)\n" +
+            "\t $secondTable p\n" +
+            "left join $secondABD ap using (num)\n" +
             "where\n" +
             "\tp.prinadl = '1'\n" +
             "union all\n" +
@@ -50,8 +50,8 @@ public class PK17Repository {
             "\tap.b_ind,\n" +
             "\tp.masbr \n" +
             "from\n" +
-            "\tperkon.per2021 p\n" +
-            "left join perkon.abd_pk2021 ap using (num)\n" +
+            "\t $mainTable p\n" +
+            "left join $mainABD ap using (num)\n" +
             "where\n" +
             "\tp.prinadl = '1'";
 
@@ -65,28 +65,36 @@ public class PK17Repository {
             "\t\tsob,\n" +
             "\t\tb_ind\n" +
             "\tfrom\n" +
-            "\t\tperkon.abd_pk2019\n" +
+            "\t\t $thirdABD \n" +
             "\tunion all\n" +
             "\tselect\n" +
             "\t\tnum,\n" +
             "\t\tsob,\n" +
             "\t\tb_ind\n" +
             "\tfrom\n" +
-            "\t\tperkon.abd_pk2020\n" +
+            "\t\t $secondABD \n" +
             "\tunion all\n" +
             "\tselect\n" +
             "\t\tnum,\n" +
             "\t\tsob,\n" +
             "\t\tb_ind\n" +
             "\tfrom\n" +
-            "\t\tperkon.abd_pk2019) list";
+            "\t\t $mainABD) list";
 
-    public List<PK17Data> getData() {
+    public List<PK17Data> getData(String year) {
         List<PK17Data> data = new ArrayList<>();
 
         try (Connection conn = dataSource.getConnection()) {
             Statement statement = conn.createStatement();
-            ResultSet result = statement.executeQuery(SELECT);
+            String query =  SELECT
+                    .replace("$mainTable", "perkon.per" + year)
+                    .replace("$mainABD", "perkon.abd_pk" + year)
+                    .replace("$secondTable", "perkon.per" + "2020")
+                    .replace("$secondABD", "perkon.abd_pk" + "2020")
+                    .replace("$thirdTable", "perkon.per" + "2019")
+                    .replace("$thirdABD", "perkon.abd_pk" + "2019");
+            System.out.println(query);
+            ResultSet result = statement.executeQuery(query);
 
             while (result.next()) {
                 data.add(extract(result));
@@ -99,12 +107,16 @@ public class PK17Repository {
         return data;
     }
 
-    public List<PK17AbdData> getContainersABDPK() {
+    public List<PK17AbdData> getContainersABDPK(String year) {
         List<PK17AbdData> data = new ArrayList<>();
 
         try (Connection conn = dataSource.getConnection()) {
             Statement statement = conn.createStatement();
-            ResultSet result = statement.executeQuery(SELECT_CONTAINERS_ABD_PK);
+            String query =  SELECT_CONTAINERS_ABD_PK
+                    .replace("$mainABD", "perkon.abd_pk" + year)
+                    .replace("$secondABD", "perkon.abd_pk" + "2020")
+                    .replace("$thirdABD", "perkon.abd_pk" + "2019");
+            ResultSet result = statement.executeQuery(query);
 
             while (result.next()) {
                 data.add(extractABDData(result));

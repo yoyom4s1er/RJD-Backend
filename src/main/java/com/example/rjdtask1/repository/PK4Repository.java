@@ -94,6 +94,7 @@ public class PK4Repository {
             String query =  SELECT
                     .replace("$tableName", "perkon.per" + year)
                     .replace("$abdName", "perkon.abd_pk" + year);
+            System.out.println(query);
             ResultSet result = statement.executeQuery(query);
 
             while (result.next()) {
@@ -112,7 +113,7 @@ public class PK4Repository {
 
         try (Connection conn = dataSource.getConnection()) {
             Statement statement = conn.createStatement();
-            String query =  SELECT
+            String query =  SELECT_BY_STK
                     .replace("$tableName", "perkon.per" + year)
                     .replace("$abdName", "perkon.abd_pk" + year);
             ResultSet result = statement.executeQuery(query);
@@ -133,7 +134,7 @@ public class PK4Repository {
 
         try (Connection conn = dataSource.getConnection()) {
             Statement statement = conn.createStatement();
-            String query =  SELECT
+            String query =  SELECT_BY_KTK
                     .replace("$tableName", "perkon.per" + year)
                     .replace("$abdName", "perkon.abd_pk" + year);
             ResultSet result = statement.executeQuery(query);

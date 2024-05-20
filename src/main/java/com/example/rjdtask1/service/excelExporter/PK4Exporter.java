@@ -69,12 +69,13 @@ public class PK4Exporter extends TableExcelExporter{
         rowIndexes.put("all", 9);
     }
 
-    @Override
-    public void exportToStream(ByteArrayOutputStream stream, String year) throws IOException {
-        ExcelFileId excelFileId = new ExcelFileId("PK4", year);
-        if (excelFileRepository.existsById(excelFileId)) {
-            stream.write(excelFileRepository.getReferenceById(excelFileId).getFileData());
-            return;
+    public void exportToStream(ByteArrayOutputStream stream, String year, boolean forceGenerate) throws IOException {
+        if (!forceGenerate) {
+            ExcelFileId excelFileId = new ExcelFileId("PK4", year);
+            if (excelFileRepository.existsById(excelFileId)) {
+                stream.write(excelFileRepository.getReferenceById(excelFileId).getFileData());
+                return;
+            }
         }
 
         File file = ResourceUtils.getFile("classpath:PK_4.xlsx");
@@ -156,6 +157,11 @@ public class PK4Exporter extends TableExcelExporter{
         for (var entry: columnCounts.entrySet()) {
             createCell(row, columnIndexes.get(entry.getKey()), entry.getValue(), null);
         }
+    }
+
+    @Override
+    public void exportToStream(ByteArrayOutputStream stream, String year) throws IOException {
+
     }
 
     class Administration {

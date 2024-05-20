@@ -47,12 +47,13 @@ public class PK3Exporter extends TableExcelExporter<PK3Data>{
         rowIndexes.put("26", 205);
     }
 
-    @Override
-    public void exportToStream(ByteArrayOutputStream stream, String year) throws IOException {
-        ExcelFileId excelFileId = new ExcelFileId("PK3", year);
-        if (excelFileRepository.existsById(excelFileId)) {
-            stream.write(excelFileRepository.getReferenceById(excelFileId).getFileData());
-            return;
+    public void exportToStream(ByteArrayOutputStream stream, String year, boolean forceGenerate) throws IOException {
+        if (!forceGenerate) {
+            ExcelFileId excelFileId = new ExcelFileId("PK3", year);
+            if (excelFileRepository.existsById(excelFileId)) {
+                stream.write(excelFileRepository.getReferenceById(excelFileId).getFileData());
+                return;
+            }
         }
 
         File file = ResourceUtils.getFile("classpath:PK_3.xlsx");
@@ -204,6 +205,11 @@ public class PK3Exporter extends TableExcelExporter<PK3Data>{
         } else {
             cell.setCellValue((String) value);
         }
+    }
+
+    @Override
+    public void exportToStream(ByteArrayOutputStream stream, String year) throws IOException {
+
     }
 
     class Administration {

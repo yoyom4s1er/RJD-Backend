@@ -52,24 +52,25 @@ public class PK17Exporter extends TableExcelExporter{
         rowIndexes.put("NoABD", 28);
     }
 
-    @Override
-    public void exportToStream(ByteArrayOutputStream stream, String year) throws IOException {
-        ExcelFileId excelFileId = new ExcelFileId("PK17", "2021");
-        if (excelFileRepository.existsById(excelFileId)) {
-            stream.write(excelFileRepository.getReferenceById(excelFileId).getFileData());
-            return;
+    public void exportToStream(ByteArrayOutputStream stream, String year, boolean forceGenerate) throws IOException {
+        if (!forceGenerate) {
+            ExcelFileId excelFileId = new ExcelFileId("PK17", year);
+            if (excelFileRepository.existsById(excelFileId)) {
+                stream.write(excelFileRepository.getReferenceById(excelFileId).getFileData());
+                return;
+            }
         }
 
         File file = ResourceUtils.getFile("classpath:PK_17.xlsx");
         InputStream inputStream = new FileInputStream(file);
         XSSFWorkbook workbook = (XSSFWorkbook) WorkbookFactory.create(inputStream);
 
-        List<Administration> list = InitObjects(repository.getData());
+        List<Administration> list = InitObjects(repository.getData(year));
 
-        writeData(workbook.getSheetAt(0), list);
+        writeData(workbook.getSheetAt(0), list, year);
 
         workbook.write(stream);
-        excelFileRepository.save(new ExcelFile("PK17", "2021", stream.toByteArray()));
+        excelFileRepository.save(new ExcelFile("PK17", year, stream.toByteArray()));
         workbook.close();
     }
 
@@ -104,8 +105,8 @@ public class PK17Exporter extends TableExcelExporter{
         return administrations.values().stream().toList();
     }
 
-    private void writeData(XSSFSheet sheet, List<Administration> data) {
-        List<PK17AbdData> containersABDPK = repository.getContainersABDPK();
+    private void writeData(XSSFSheet sheet, List<Administration> data, String year) {
+        List<PK17AbdData> containersABDPK = repository.getContainersABDPK(year);
 
         for (var element:
              data) {
@@ -170,6 +171,11 @@ public class PK17Exporter extends TableExcelExporter{
 
         createCell(row, 21, element.getLastColumn(containersABDPK), null);
         createCell(row, 22, element.getLastColumnKTK(containersABDPK), null);
+    }
+
+    @Override
+    public void exportToStream(ByteArrayOutputStream stream, String year) throws IOException {
+
     }
 
     class Administration {

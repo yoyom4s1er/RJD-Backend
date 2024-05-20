@@ -1,0 +1,83 @@
+.documentList {
+    margin-left: 2%;
+}
+
+.plus-button {
+    border: none;
+    color: white;
+    font-weight: bolder;
+    font-size: large;
+    background-color: chartreuse;
+    border-radius: 20%;
+    display: flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.download-row {
+    margin-top: 10px;
+    margin-left: 1%;
+
+    display: flex;
+    flex-direction: row;
+}
+
+.download-button {
+    background-color: cornflowerblue;
+    border-radius: 5%;
+    border: none;
+
+    color: white;
+    font-weight: bolder;
+    font-size: large;
+
+    margin-right: 10px;
+}
+
+.delete-button {
+    background-color: red;
+    border-radius: 5%;
+    border: none;
+
+    color: white;
+    font-weight: bolder;
+    font-size: large;
+
+    margin-right: 10px;
+}
+
+.tree{
+    --spacing : 1.5rem;
+    --radius  : 10px;
+}
+
+.tree li{
+    display      : block;
+    position     : relative;
+    padding-left : calc(2 * var(--spacing) - var(--radius) - 2px);
+}
+
+.tree ul{
+    margin-left  : calc(var(--radius) - var(--spacing));
+    padding-left : 0;
+}
+
+.tree ul li{
+    border-left : 2px solid #ddd;
+}
+
+.tree ul li:last-child{
+    border-color : transparent;
+}
+
+.tree ul li::before{
+    content      : '';
+    display      : block;
+    position     : absolute;
+    top          : calc(var(--spacing) / -2);
+    left         : -2px;
+    width        : calc(var(--spacing) + 2px);
+    height       : calc(var(--spacing) + 1px);
+    border       : solid #ddd;
+    border-width : 0 0 2px 2px;
+}

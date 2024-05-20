@@ -107,6 +107,7 @@ public class PK2Repository {
             String query =  SELECT
                     .replace("$tableName", "perkon.per" + year)
                     .replace("$abdName", "perkon.abd_pk" + year);
+            System.out.println(query);
             ResultSet result = statement.executeQuery(query);
 
             while (result.next()) {
@@ -128,6 +129,7 @@ public class PK2Repository {
                     .replace("$tableName", "perkon.per" + year)
                     .replace("$abdName", "perkon.abd_pk" + year);
             PreparedStatement statement = conn.prepareStatement(query);
+            System.out.println(statement.toString());
             statement.setString(1, String.valueOf(sob));
             ResultSet result = statement.executeQuery();
 

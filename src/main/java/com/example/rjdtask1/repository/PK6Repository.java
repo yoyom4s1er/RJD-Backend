@@ -2,41 +2,44 @@ package com.example.rjdtask1.repository;
 
 import com.example.rjdtask1.model.PK5_6_8Data;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+@Repository
 @AllArgsConstructor
-public class PK8Repository {
+public class PK6Repository {
 
     private final DataSource dataSource;
-    private final String SELECT =
-            "select \n" +
-                    "\tlist.sname adm,\n" +
-                    "\tlist.dor dor, \n" +
-                    "\tlist.sob, \n" +
-                    "\tcount(list.num)\n" +
-                    "from\n" +
-                    "\t(select distinct \n" +
-                    "\t\tadm.\"SNAME\" as sname, \n" +
-                    "\t\tdor.name as dor, \n" +
-                    "\t\tp.num, \n" +
-                    "\t\tcase when ap.sob is null then '0' else adm.mnemo_r end as sob\n" +
-                    "\tfrom \n" +
-                    "\t\t $tableName p\n" +
-                    "\t\tleft join $abdName ap using(num)\n" +
-                    "\t\tINNER JOIN local.adm as adm\n" +
-                    "\t\t\tON TO_NUMBER(p.adm_per, '999') = adm.kod\n" +
-                    "\t\tINNER JOIN local.dor as dor\n" +
-                    "\t\t\tON TO_NUMBER(p.dor_per, '999') = dor.kod\n" +
-                    "\twhere p.mesto = '7'" +
-                    "and p.prinadl = '1')list\n" +
-                    "group by grouping sets(rollup(list.sname, list.dor, list.sob))\n" +
-                    "order by list.sname desc, \tlist.dor desc, list.sob desc;";
+    private final String SELECT = "select \n" +
+            "\tlist.sname adm,\n" +
+            "\tlist.dor dor, \n" +
+            "\tlist.sob, \n" +
+            "\tcount(list.num)\n" +
+            "from\n" +
+            "\t(select distinct \n" +
+            "\t\tadm.\"SNAME\" as sname, \n" +
+            "\t\tdor.name as dor, \n" +
+            "\t\tp.num, \n" +
+            "\t\tcase when ap.sob is null then '0' else adm.mnemo_r end as sob\n" +
+            "\tfrom \n" +
+            "\t\t perkon.per2020 p\n" +
+            "\t\tleft join perkon.abd_pk2020 ap using(num)\n" +
+            "\t\tINNER JOIN local.adm as adm\n" +
+            "\t\t\tON TO_NUMBER(p.adm_per, '999') = adm.kod\n" +
+            "\t\tINNER JOIN local.dor as dor\n" +
+            "\t\t\tON TO_NUMBER(p.dor_per, '999') = dor.kod\n" +
+            "\twhere \n" +
+            "\t\tp.mesto = '0'\n" +
+            "\t\tand p.prinadl = '1')list\n" +
+            "group by rollup(list.sname, list.dor, list.sob)\n" +
+            "order by list.sname desc, \tlist.dor desc, list.sob desc;";
 
     private final String SELECT_BY_STK =
             "select \n" +
@@ -57,10 +60,10 @@ public class PK8Repository {
                     "\t\t\tON TO_NUMBER(p.adm_per, '999') = adm.kod\n" +
                     "\t\tINNER JOIN local.dor as dor\n" +
                     "\t\t\tON TO_NUMBER(p.dor_per, '999') = dor.kod\n" +
-                    "\twhere p.mesto = '7' \n" +
+                    "\twhere p.mesto = '0' \n" +
                     "and TO_NUMBER(p.masbr, '99') < 10 \n" +
                     "and p.prinadl = '1')list\n" +
-                    "group by grouping sets(rollup(list.sname, list.dor, list.sob))\n" +
+                    "group by rollup(list.sname, list.dor, list.sob)\n" +
                     "order by list.sname desc, \tlist.dor desc, list.sob desc;";
 
     private final String SELECT_BY_KTK =
@@ -82,10 +85,10 @@ public class PK8Repository {
                     "\t\t\tON TO_NUMBER(p.adm_per, '999') = adm.kod\n" +
                     "\t\tINNER JOIN local.dor as dor\n" +
                     "\t\t\tON TO_NUMBER(p.dor_per, '999') = dor.kod\n" +
-                    "\twhere p.mesto = '7' \n" +
+                    "\twhere p.mesto = '0' \n" +
                     "and TO_NUMBER(p.masbr, '99') >= 10 \n" +
                     "and p.prinadl = '1')list\n" +
-                    "group by grouping sets(rollup(list.sname, list.dor, list.sob))\n" +
+                    "group by rollup(list.sname, list.dor, list.sob)\n" +
                     "order by list.sname desc, \tlist.dor desc, list.sob desc;";
 
     public List<PK5_6_8Data> getQueryResult(String year) {
@@ -97,8 +100,9 @@ public class PK8Repository {
             String query =  SELECT
                     .replace("$tableName", "perkon.per" + year)
                     .replace("$abdName", "perkon.abd_pk" + year);
-            System.out.println(query);
             ResultSet result = statement.executeQuery(query);
+
+            System.out.println(query);
 
             while (result.next()) {
                 data.add(extract(result));
@@ -108,6 +112,7 @@ public class PK8Repository {
             throw new RuntimeException(e);
         }
 
+        System.out.println(data);
         return data;
     }
 

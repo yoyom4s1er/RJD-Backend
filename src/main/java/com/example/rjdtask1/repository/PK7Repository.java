@@ -1,9 +1,9 @@
 package com.example.rjdtask1.repository;
 
-import com.example.rjdtask1.model.PK3Data;
+import com.example.rjdtask1.model.PK5_6_8Data;
+import com.example.rjdtask1.model.PK7Data;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
-
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -14,13 +14,12 @@ import java.util.List;
 
 @Repository
 @AllArgsConstructor
-public class PK3Repository {
+public class PK7Repository {
 
     private final DataSource dataSource;
 
     private final String SELECT = "select\n" +
-            "\tlist.adm_per,\n" +
-            "\tlist.mesto,\n" +
+            "\tlist.sob,\n" +
             "\tcount(*),\n" +
             "\tcount(*) FILTER (WHERE TO_NUMBER(list.masbr, '99') >= 3 and TO_NUMBER(list.masbr, '99') < 5) as \"3\",\n" +
             "\tcount(*) FILTER (WHERE TO_NUMBER(list.masbr, '99') >= 5 and TO_NUMBER(list.masbr, '99') < 10) as \"5\",\n" +
@@ -31,22 +30,20 @@ public class PK3Repository {
             "\tcount(*) FILTER (WHERE TO_NUMBER(list.masbr, '99') >= 30) as \">=30\"\n" +
             "from\n" +
             "\t(select distinct\n" +
-            "\t\t\tp.mesto,\n" +
-            "\t\t\tp.adm as adm_per,\n" +
-            "\t\t\tp.num,\n" +
             "\t\t\tap.sob,\n" +
             "\t\t\tp.masbr\n" +
             "\t\tfrom\n" +
             "\t\t\t $tableName p\n" +
             "\t\tleft join \n" +
             "\t\t\t $abdName ap using(num)\n" +
-            "where p.mesto <> '9'" +
-            "\t) list\n" +
-            "group by rollup(list.adm_per, list.mesto)\n" +
-            "order by list.adm_per desc, list.mesto desc;";
+            "\t\twhere p.mesto = '7'\t\n" +
+            "\t\t\tand p.vid_k = '1') list\n" +
+            "group by list.sob\n" +
+            "order by list.sob desc;";
 
-    public List<PK3Data> getQueryResult(String year) {
-        List<PK3Data> data = new ArrayList<>();
+    public List<PK7Data> getQueryResult(String year) {
+        List<PK7Data> data = new ArrayList<>();
+        //System.out.println(PEREPIS_2021);
 
         try (Connection conn = dataSource.getConnection()) {
             Statement statement = conn.createStatement();
@@ -57,7 +54,7 @@ public class PK3Repository {
             ResultSet result = statement.executeQuery(query);
 
             while (result.next()) {
-                data.add(parseRow(result));
+                data.add(extract(result));
             }
 
         } catch (SQLException e) {
@@ -67,18 +64,17 @@ public class PK3Repository {
         return data;
     }
 
-    private PK3Data parseRow(ResultSet result) throws SQLException {
-        return new PK3Data(
-                result.getString(1),
-                result.getString(2),
-                result.getInt(3),
-                result.getInt(4),
-                result.getInt(5),
-                result.getInt(6),
-                result.getInt(7),
-                result.getInt(8),
-                result.getInt(9),
-                result.getInt(10)
-                );
+    private PK7Data extract(ResultSet set) throws SQLException {
+        return new PK7Data(
+                set.getString(1),
+                set.getInt(2),
+                set.getInt(3),
+                set.getInt(4),
+                set.getInt(5),
+                set.getInt(6),
+                set.getInt(7),
+                set.getInt(8),
+                set.getInt(9)
+        );
     }
 }

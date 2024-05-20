@@ -4,8 +4,11 @@ import com.example.rjdtask1.model.ExcelFile;
 import com.example.rjdtask1.model.PK5_6_8Data;
 import com.example.rjdtask1.model.compositeId.ExcelFileId;
 import com.example.rjdtask1.repository.ExcelFileRepository;
+import com.example.rjdtask1.repository.PK6Repository;
 import com.example.rjdtask1.repository.PK8Repository;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.RegionUtil;
 import org.apache.poi.xssf.usermodel.*;
@@ -13,18 +16,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
-public class PK8Exporter extends TableExcelExporter<PK5_6_8Data>{
+public class PK6Exporter extends TableExcelExporter<PK5_6_8Data>{
 
     private final ExcelFileRepository excelFileRepository;
-    private final PK8Repository pk_8_Repository;
+    private final PK6Repository pk6Repository;
     private final Map<String, Integer> columnIndexes;
 
-    public PK8Exporter(ExcelFileRepository excelFileRepository, PK8Repository pk_8_Repository) {
+    public PK6Exporter(ExcelFileRepository excelFileRepository, PK6Repository pk6Repository) {
         this.excelFileRepository = excelFileRepository;
-        this.pk_8_Repository = pk_8_Repository;
+        this.pk6Repository = pk6Repository;
 
         columnIndexes = new HashMap<>();
         columnIndexes.put("АЗ", 2);
@@ -72,26 +78,26 @@ public class PK8Exporter extends TableExcelExporter<PK5_6_8Data>{
 
     public void exportToStream(ByteArrayOutputStream stream, String year, boolean forceGenerate) throws IOException {
         if (!forceGenerate) {
-            ExcelFileId excelFileId = new ExcelFileId("PK8", year);
+            ExcelFileId excelFileId = new ExcelFileId("PK6", year);
             if (excelFileRepository.existsById(excelFileId)) {
                 stream.write(excelFileRepository.getReferenceById(excelFileId).getFileData());
                 return;
             }
         }
 
-        File file = ResourceUtils.getFile("classpath:PK_8.xlsx");
+        File file = ResourceUtils.getFile("classpath:PK_6.xlsx");
         InputStream inputStream = new FileInputStream(file);
         XSSFWorkbook workbook = (XSSFWorkbook) WorkbookFactory.create(inputStream);
 
         //createAllAdmRow(workbook, initObjects(pk_8_2Repository.getQueryResult()));
-        writeDataLines(workbook.getSheetAt(0), initObjects(pk_8_Repository.getQueryResult(year)));
-        writeDataLines(workbook.getSheetAt(1), initObjects(pk_8_Repository.selectByKTK(year)));
-        writeDataLines(workbook.getSheetAt(2), initObjects(pk_8_Repository.selectBySTK(year)));
+        writeDataLines(workbook.getSheetAt(0), initObjects(pk6Repository.getQueryResult(year)));
+        writeDataLines(workbook.getSheetAt(1), initObjects(pk6Repository.selectByKTK(year)));
+        writeDataLines(workbook.getSheetAt(2), initObjects(pk6Repository.selectBySTK(year)));
 
         completeBorders(workbook);
 
         workbook.write(stream);
-        excelFileRepository.save(new ExcelFile("PK8", year, stream.toByteArray()));
+        excelFileRepository.save(new ExcelFile("PK6", year, stream.toByteArray()));
         workbook.close();
     }
 
