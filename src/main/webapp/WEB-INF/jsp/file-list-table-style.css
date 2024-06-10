@@ -1,0 +1,22 @@
+.row__element {
+    background: #daf0e5;
+}
+
+.clickable:hover, #back:hover {
+    background-color: #badbca;
+    cursor: pointer;
+}
+
+.table__header {
+    background: #498c69;
+    color: white;
+    padding: 5px 10px;
+    border-width: 0 1px 1px 0;
+    border-color: white;
+    text-align: left;
+}
+.shadow{
+    box-shadow:0 0 11px 1px rgba(0,0,0,0.34);
+    -webkit-box-shadow:0 0 11px 1px rgba(0,0,0,0.34);
+    -moz-box-shadow:0 0 11px 1px rgba(0,0,0,0.34);
+}

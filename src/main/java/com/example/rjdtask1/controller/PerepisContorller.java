@@ -71,8 +71,6 @@ public class PerepisContorller {
             throw new RuntimeException();
         }
 
-        System.out.println(forceGenerate);
-
         try {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             HttpHeaders header = new HttpHeaders();
@@ -83,7 +81,6 @@ public class PerepisContorller {
                     header, HttpStatus.CREATED);
         } catch (Exception e) {
             throw new RuntimeException(e);
-            //return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
     @GetMapping("/pk8/{year}/excel")

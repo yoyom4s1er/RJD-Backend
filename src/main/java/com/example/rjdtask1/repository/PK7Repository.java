@@ -1,6 +1,5 @@
 package com.example.rjdtask1.repository;
 
-import com.example.rjdtask1.model.PK5_6_8Data;
 import com.example.rjdtask1.model.PK7Data;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;

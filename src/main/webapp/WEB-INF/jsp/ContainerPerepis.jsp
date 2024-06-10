@@ -2,6 +2,7 @@
 <html lang="ru">
 <head>
     <style><%@include file="/WEB-INF/jsp/perepisStyle.css"%></style>
+    <style><%@include file="/WEB-INF/jsp/style.css"%></style>
     <title>Перепись контейнеров</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -94,6 +95,21 @@
 
 </script>
 <body>
+<div class="header1">
+    <div style="display: flex; flex-direction: row">
+        <div class="header1Text" style="margin-right: 10px" onclick="loadDirectoryNames()">АС ПЕРЕПИСЬ ПК</div>
+        <div class="header1Text" onclick="loadClassifierNames()">РАБОТА С ДАННЫМИ</div>
+        <div class="header1Text" onclick="sortTable()">СПРАВКИ/ОТЧЁТЫ</div>
+        <div class="header1Text" onclick="sortTable()">ДОКУМЕНТАЦИЯ</div>
+    </div>
+    <div style="display: flex; align-items: center; margin-right: 50px">
+        <label style="margin-bottom: 0">
+            <input class="searchField" type="text" placeholder="Поиск..." style="color: rgb(128,128,128); text-indent: 6px" oninput="searchQuery()" id="SearchInput">
+            </input>
+        </label>
+        <div class="list-group searchMenu" id="SearchMenu"></div>
+    </div>
+</div>
 <h4>
     Файлы:
 </h4>
